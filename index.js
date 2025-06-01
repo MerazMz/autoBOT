@@ -136,9 +136,18 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--disable-gpu',
-            '--disable-extensions'
+            '--disable-extensions',
+            '--disable-default-apps',
+            '--disable-translate',
+            '--disable-sync',
+            '--disable-background-networking',
+            '--metrics-recording-only',
+            '--mute-audio',
+            '--no-default-browser-check',
+            '--safebrowsing-disable-auto-update',
+            '--js-flags=--max-old-space-size=512'
         ],
-        executablePath: process.platform === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : undefined
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
     },
     qrMaxRetries: 5,
     authTimeoutMs: 60000,
