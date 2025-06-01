@@ -8,6 +8,7 @@ require('dotenv').config();
 // Initialize Express app
 const app = express();
 const port = process.env.PORT || 3000;
+const host = '0.0.0.0';  // This allows external connections
 
 // Middleware
 app.use(express.json());
@@ -279,6 +280,7 @@ client.initialize().catch(err => {
     process.exit(1);
 });
 
-app.listen(port, () => {
-    console.log(`Dashboard server running at http://localhost:${port}`);
+app.listen(port, host, () => {
+    console.log(`Dashboard server running on port ${port}`);
+    console.log('Waiting for WhatsApp QR code...');
 });
