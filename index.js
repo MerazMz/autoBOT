@@ -148,17 +148,29 @@ const client = new Client({
             '--safebrowsing-disable-auto-update',
             '--js-flags=--max-old-space-size=512'
         ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
+        executablePath: '/usr/bin/google-chrome'
     },
     qrMaxRetries: 5,
     authTimeoutMs: 60000,
     restartOnAuthFail: true
 });
 
-// WhatsApp event handlers
+// Add error handling for client initialization
+client.on('disconnected', (reason) => {
+    console.log('Client was disconnected:', reason);
+    // Attempt to reinitialize the client
+    setTimeout(() => {
+        console.log('Attempting to reconnect...');
+        client.initialize().catch(err => {
+            console.error('Failed to reinitialize WhatsApp client:', err);
+        });
+    }, 5000);
+});
+
+// Add more detailed logging
 client.on('qr', (qr) => {
-    qrcode.generate(qr, { small: true });
     console.log('QR Code received. Scan it with WhatsApp to login.');
+    qrcode.generate(qr, { small: true });
 });
 
 client.on('ready', () => {
@@ -171,10 +183,6 @@ client.on('authenticated', () => {
 
 client.on('auth_failure', (msg) => {
     console.error('Authentication failed:', msg);
-});
-
-client.on('disconnected', (reason) => {
-    console.log('Client was disconnected:', reason);
 });
 
 client.on('message', async msg => {
